@@ -68,8 +68,8 @@ def validMove(board, move)
   #puts "This is the moving piece: #{movingPiece}"
   #puts "This is the piece in the destination: #{destinationPiece}"
   
-  return false if movingPiece.eql? "--"
-  return false if movingPiece[0].eql? destinationPiece[0]
+  return 0 if movingPiece.eql? "--"
+  return 0 if movingPiece[0].eql? destinationPiece[0]
   
   startingColumnIndex = board.columnIndex(move[0][0])
   finishingColumnIndex = board.columnIndex(move[1][0])
@@ -77,43 +77,62 @@ def validMove(board, move)
   case movingPiece[1]
   when 'K' # King
     # one square in each direction, and diagonally
-    return false if startingColumnIndex - finishingColumnIndex < -1 and
+    return 0 if startingColumnIndex - finishingColumnIndex < -1 and
                     startingColumnIndex - finishingColumnIndex > -1
-    return false if move[0][1].to_i - move[1][1].to_i < -1 and
+    return 0 if move[0][1].to_i - move[1][1].to_i < -1 and
                     move[0][1].to_i - move[1][1].to_i > 1
 
     #can't move himself to check (where he can be captured)
     # TODO: need to find the other King
+    puts "KING NOT IMPLEMENTED"
+    return 2
     
   when 'Q' # Queen
+    puts "QUEEN NOT IMPLEMENTED"
+    return 2
   when 'R' # Rook
+    puts "ROOK NOT IMPLEMENTED"
+    return 2
   when 'B' # Bishop
+    # as far as it wants but only diagonally
+    forward = move[0][0].eql?move[1][0]
+    return 0 if forward
+    
+    return 0 if !(startingColumnIndex - finishingColumnIndex).abs.eql? (move[0][1].to_i - move[1][1].to_i)
+    #binding.pry
+    # each bishop starts in one color and have to stay in that color
+    # TODO: stopped here
+    
+    puts "BISHOP NOT IMPLEMENTED"
+    return 2
   when 'N' # Night
+    puts "NIGHT NOT IMPLEMENTED"
+    return 2
   when 'P' # Pawn
     forward = move[0][0].eql?move[1][0]
     if forward
       totalSquares = (move[0][1].to_i - move[1][1].to_i).abs
-      return false if totalSquares > 2
+      return 0 if totalSquares > 2
       if totalSquares.eql?2
         # can move forward 2 squares if it is the first move
         case movingPiece
         when 'wP'
-          return false if !move[0][1].eql?"2"
+          return 0 if !move[0][1].eql?"2"
         when 'bP'
-          return false if !move[0][1].eql?"7"
+          return 0 if !move[0][1].eql?"7"
         end
       end
     else
       #can move diagonally to capture
-      return false if destinationPiece.eql?"--"
+      return 0 if destinationPiece.eql?"--"
     end
 
   else
     8.times puts "INVALID PIECE"
-    return false
+    return 0
   end
   
-  true
+  1
 end
 
 board = Board.new(ARGV[0])
@@ -125,10 +144,14 @@ moves = Moves.new(ARGV[1])
 moveCount = 1
 moves.moves.each do |move|
   #puts "Validating move: #{move.to_s}"
-  if validMove board, move
+  moveStatus = validMove board, move
+  case moveStatus
+  when 0
+    puts "#{moveCount} - ILLEGAL"
+  when 1
     puts "#{moveCount} - LEGAL"
   else
-    puts "#{moveCount} - ILLEGAL"
+    puts "#{moveCount} - NOT-IMPLEMENTED"
   end
 
   moveCount += 1

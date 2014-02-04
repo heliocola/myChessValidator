@@ -16,6 +16,7 @@ Possible moves:
 - Bishop:
     as far as it wants but only diagonally
     each bishop starts in one color and have to stay in that color
+    can't go over other pieces
 
 - Knight:
     move in L: two squares in one direction than turn 90 degrees to move one more square
@@ -25,3 +26,7 @@ Possible moves:
     otherwise move forward 1 if empty in front of it
     can move diagonally to capture
 
+Usefull Links
+=============
+
+ruby validator.rb files/complex_board.txt files/complex_moves.txt  | grep "NOT IMPLEMENTED" | sort | uniq -c
