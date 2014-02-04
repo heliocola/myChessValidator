@@ -92,11 +92,20 @@ def validMove(board, move)
   when 'P' # Pawn
     forward = move[0][0].eql?move[1][0]
     if forward
-      # TODO: stopped here...
-      #can move forward 2 squares if it is the first move
-      #otherwise move forward 1 if empty in front of it
+      totalSquares = (move[0][1].to_i - move[1][1].to_i).abs
+      return false if totalSquares > 2
+      if totalSquares.eql?2
+        # can move forward 2 squares if it is the first move
+        case movingPiece
+        when 'wP'
+          return false if !move[0][1].eql?"2"
+        when 'bP'
+          return false if !move[0][1].eql?"7"
+        end
+      end
     else
       #can move diagonally to capture
+      return false if destinationPiece.eql?"--"
     end
 
   else
@@ -107,10 +116,10 @@ def validMove(board, move)
   true
 end
 
-board = Board.new("simple_board.txt")
+board = Board.new(ARGV[0])
 board.print
 
-moves = Moves.new("simple_moves.txt")
+moves = Moves.new(ARGV[1])
 #moves.print
 
 moveCount = 1
