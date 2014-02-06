@@ -26,7 +26,11 @@ class Board
   end
   
   def columnIndex(n)
-    n[0].unpack('C')[0] - "a".unpack('C')[0]
+    n[0].unpack('H2')[0].to_i - "a".unpack('H2')[0].to_i
+  end
+  
+  def columnToken(i)
+    [(61 + i).to_s].pack('H2')[0]
   end
   
   def element(n)
@@ -71,6 +75,8 @@ def validMove(board, move)
   return 0 if movingPiece.eql? "--"
   return 0 if movingPiece[0].eql? destinationPiece[0]
   
+  # TODO: validate if move[0] and move[1] are inside the board
+  
   startingColumnIndex = board.columnIndex(move[0][0])
   finishingColumnIndex = board.columnIndex(move[1][0])
   
@@ -95,19 +101,52 @@ def validMove(board, move)
     return 2
   when 'B' # Bishop
     # as far as it wants but only diagonally
+    # each bishop starts in one color and have to stay in that color
     forward = move[0][0].eql?move[1][0]
     return 0 if forward
     
-    return 0 if !(startingColumnIndex - finishingColumnIndex).abs.eql? (move[0][1].to_i - move[1][1].to_i)
-    #binding.pry
-    # each bishop starts in one color and have to stay in that color
-    # TODO: stopped here
+    # not a valid diagonal
+    return 0 if !(startingColumnIndex - finishingColumnIndex).abs.eql? (move[0][1].to_i - move[1][1].to_i).abs
+
+    # Walk from move[0] to move[1] and check if it is empty
+    nextMove = move[0].dup
+    columnDirection = (startingColumnIndex - finishingColumnIndex) > 0 ? -1 : 1
+    lineDirection = (move[0][1].to_i - move[1][1].to_i) > 0 ? -1 : 1
     
-    puts "BISHOP NOT IMPLEMENTED"
-    return 2
-  when 'N' # Night
-    puts "NIGHT NOT IMPLEMENTED"
-    return 2
+    while !nextMove.eql?move[1] do
+      nextMoveColumnIndex = board.columnIndex(nextMove[0])
+      nextMove[0] = board.columnToken(nextMoveColumnIndex + columnDirection)
+      nextMove[1] = (nextMove[1].to_i + lineDirection).to_s
+      return 0 if !board.element(nextMove).eql?"--" and !nextMove.eql?move[1]
+    end
+  when 'N' # Knight
+    # move in L: two squares in one direction than turn 90 degrees to move one more square
+    columnDirection = (startingColumnIndex - finishingColumnIndex) > 0 ? -1 : 1
+    lineDirection = (move[0][1].to_i - move[1][1].to_i) > 0 ? -1 : 1
+
+    # Check if it doesn't go outside the board walking 2 squares in the column and 1 square
+    # in the line
+    if (startingColumnIndex + columnDirection*2) > 0 and
+       (startingColumnIndex + columnDirection*2) <= 7 
+      # Walk 2 squares in the column direction
+      columnDestination = "--"
+      columnDestination[0] = board.columnToken(startingColumnIndex + columnDirection*2)
+      # Walk 1 square in the line direction
+      columnDestination[1] = (move[0][1].to_i + lineDirection).to_s
+      return 1 if columnDestination.eql?move[1]
+    end
+
+    # Check if it doesn't go outside the board walking 2 squares in the line and 1 square
+    # in the column
+    if (move[0][1].to_i + lineDirection*2) > 0 and
+       (move[0][1].to_i + lineDirection*2) <= 7
+       columnDestination = "--"
+       columnDestination[0] = board.columnToken(startingColumnIndex + columnDirection)
+       columnDestination[1] = (move[0][1].to_i + lineDirection*2).to_s
+       return 1 if columnDestination.eql?move[1]
+    end
+
+    return 0
   when 'P' # Pawn
     forward = move[0][0].eql?move[1][0]
     if forward

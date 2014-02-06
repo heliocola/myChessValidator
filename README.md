@@ -29,4 +29,15 @@ Possible moves:
 Usefull Links
 =============
 
+http://www.meetup.com/Arlington-Ruby/events/160526502/
+http://www.puzzlenode.com/puzzles/13-chess-validator
+http://en.wikipedia.org/wiki/Algebraic_notation_%28chess%29
+http://www.chess.com/learn-how-to-play-chess
+
+
+Usefull Command line
+====================
+
+ruby validator.rb files/simple_board.txt files/simple_moves.txt
+
 ruby validator.rb files/complex_board.txt files/complex_moves.txt  | grep "NOT IMPLEMENTED" | sort | uniq -c
