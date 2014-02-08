@@ -1,7 +1,16 @@
 myChessValidator
 ================
 
-Possible moves:
+Introdution
+===========
+
+To start with I would like to tell you I don't know how to play Chess.
+The links in a section below is all I used to learn about the rules of the game
+and what are the valid moves for ecah piece.
+
+Possible moves
+==============
+
 - King: 
     one square in each direction, and diagonally
     can't move himself to check (where he can be captured)
