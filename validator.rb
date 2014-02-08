@@ -94,11 +94,58 @@ def validMove(board, move)
     return 2
     
   when 'Q' # Queen
-    puts "QUEEN NOT IMPLEMENTED"
-    return 2
+    # any one straight direction
+    # as far as possible as long as she doesn't move through other pieces
+    return 0 if !move[0][0].eql?move[1][0] and # column is different
+                !move[0][1].eql?move[1][1] and # line is different
+                !(startingColumnIndex - finishingColumnIndex).abs.eql? (move[0][1].to_i - move[1][1].to_i).abs # not valid diagonal
+    
+    # Check for jumps
+    nextMove = move[0].dup
+    columnDirection = 0
+    lineDirection = 0
+    if move[0][0].eql?move[1][0]
+      # Moving inside the column
+      lineDirection = (move[0][1].to_i - move[1][1].to_i) > 0 ? -1 : 1
+    elsif move[0][1].eql?move[1][1]
+      # Moving inside the line
+      columnDirection = (startingColumnIndex - finishingColumnIndex) > 0 ? -1 : 1
+    else
+      # Moving diagonally
+      columnDirection = (startingColumnIndex - finishingColumnIndex) > 0 ? -1 : 1
+      lineDirection = (move[0][1].to_i - move[1][1].to_i) > 0 ? -1 : 1
+    end
+    
+    while !nextMove.eql?move[1] do
+      # DRY
+      nextMoveColumnIndex = board.columnIndex(nextMove[0])
+      nextMove[0] = board.columnToken(nextMoveColumnIndex + columnDirection)
+      nextMove[1] = (nextMove[1].to_i + lineDirection).to_s
+      return 0 if !board.element(nextMove).eql?"--" and !nextMove.eql?move[1]
+    end
+
   when 'R' # Rook
-    puts "ROOK NOT IMPLEMENTED"
-    return 2
+    # as far as it wants but only forward, backward, and to the sides
+    return 0 if !move[0][0].eql?move[1][0] and !move[0][1].eql?move[1][1]
+    
+    # Check for jumps
+    nextMove = move[0].dup
+    columnDirection = 0
+    lineDirection = 0
+    if move[0][0].eql?move[1][0]
+      # Moving inside the column
+      lineDirection = (move[0][1].to_i - move[1][1].to_i) > 0 ? -1 : 1
+    else
+      # Moving inside the line
+      columnDirection = (startingColumnIndex - finishingColumnIndex) > 0 ? -1 : 1
+    end
+    
+    while !nextMove.eql?move[1] do
+      nextMoveColumnIndex = board.columnIndex(nextMove[0])
+      nextMove[0] = board.columnToken(nextMoveColumnIndex + columnDirection)
+      nextMove[1] = (nextMove[1].to_i + lineDirection).to_s
+      return 0 if !board.element(nextMove).eql?"--" and !nextMove.eql?move[1]
+    end
   when 'B' # Bishop
     # as far as it wants but only diagonally
     # each bishop starts in one color and have to stay in that color
@@ -109,11 +156,13 @@ def validMove(board, move)
     return 0 if !(startingColumnIndex - finishingColumnIndex).abs.eql? (move[0][1].to_i - move[1][1].to_i).abs
 
     # Walk from move[0] to move[1] and check if it is empty
+    # DRY
     nextMove = move[0].dup
     columnDirection = (startingColumnIndex - finishingColumnIndex) > 0 ? -1 : 1
     lineDirection = (move[0][1].to_i - move[1][1].to_i) > 0 ? -1 : 1
     
     while !nextMove.eql?move[1] do
+      # DRY
       nextMoveColumnIndex = board.columnIndex(nextMove[0])
       nextMove[0] = board.columnToken(nextMoveColumnIndex + columnDirection)
       nextMove[1] = (nextMove[1].to_i + lineDirection).to_s
