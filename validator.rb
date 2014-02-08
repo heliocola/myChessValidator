@@ -69,16 +69,17 @@ def validMove(board, move)
   movingPiece = board.element(move[0])
   destinationPiece = board.element(move[1])
   
-  #puts "This is the moving piece: #{movingPiece}"
-  #puts "This is the piece in the destination: #{destinationPiece}"
-  
   return 0 if movingPiece.eql? "--"
   return 0 if movingPiece[0].eql? destinationPiece[0]
   
-  # TODO: validate if move[0] and move[1] are inside the board
-  
   startingColumnIndex = board.columnIndex(move[0][0])
   finishingColumnIndex = board.columnIndex(move[1][0])
+
+  # validate if move[0] and move[1] are inside the board
+  return 0 if startingColumnIndex < 0 or startingColumnIndex > 7
+  return 0 if finishingColumnIndex < 0 or finishingColumnIndex > 7
+  return 0 if move[0][1].to_i < 1 or move[0][1].to_i > 8
+  return 0 if move[1][1].to_i < 1 or move[1][1].to_i > 8
   
   case movingPiece[1]
   when 'K' # King
@@ -89,8 +90,8 @@ def validMove(board, move)
                     move[0][1].to_i - move[1][1].to_i > 1
 
     #can't move himself to check (where he can be captured)
-    # TODO: need to find the other King
-    puts "KING NOT IMPLEMENTED"
+    # TODO: validate if a board with current King's move put himself in check
+    puts "KING NOT FULLY IMPLEMENTED (move is one square but not verified if put himself in check)"
     return 2
     
   when 'Q' # Queen
@@ -224,7 +225,7 @@ def validMove(board, move)
 end
 
 board = Board.new(ARGV[0])
-board.print
+#board.print
 
 moves = Moves.new(ARGV[1])
 #moves.print
@@ -235,11 +236,11 @@ moves.moves.each do |move|
   moveStatus = validMove board, move
   case moveStatus
   when 0
-    puts "#{moveCount} - ILLEGAL"
+    puts "ILLEGAL"
   when 1
-    puts "#{moveCount} - LEGAL"
-  else
-    puts "#{moveCount} - NOT-IMPLEMENTED"
+    puts "LEGAL"
+    #else
+    #puts "NOT-IMPLEMENTED"
   end
 
   moveCount += 1
