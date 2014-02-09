@@ -49,4 +49,4 @@ Usefull Command line
 
 ruby validator.rb files/simple_board.txt files/simple_moves.txt
 
-ruby validator.rb files/complex_board.txt files/complex_moves.txt  | grep "NOT IMPLEMENTED" | sort | uniq -c
+ruby validator.rb files/complex_board.txt files/complex_moves.txt  | grep "NOT FULLY IMPLEMENTED" | sort | uniq -c
