@@ -39,8 +39,11 @@ Usefull Links
 =============
 
 http://www.meetup.com/Arlington-Ruby/events/160526502/
+
 http://www.puzzlenode.com/puzzles/13-chess-validator
+
 http://en.wikipedia.org/wiki/Algebraic_notation_%28chess%29
+
 http://www.chess.com/learn-how-to-play-chess
 
 
